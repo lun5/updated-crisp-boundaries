@@ -20,9 +20,9 @@ type = 'speedy'; % use this for fastest results
 %type = 'accurate_low_res'; % use this for slightly slower but more accurate results
 %type = 'accurate_high_res'; % use this for slow, but high resolution results
 
-I = imread('../test_images/253027.jpg');
-%I = imread('../test_images/he1.tif');
-%I = I(1:4:end,1:4:end,:);
+%I = imread('../test_images/253027.jpg');
+I = imread('../test_images/he1.tif');
+I = I(1:4:end,1:4:end,:);
 [E,E_oriented] = findBoundaries(I,type);
 
 %close all; 
@@ -37,7 +37,7 @@ figure;subplot(121); imshow(I); subplot(122); imshow(1-mat2gray(E));
 
 if (~ispc)
     
-    thresh = 0.03; % larger values give fewer segments
+    thresh = 0.1; % larger values give fewer segments
     E_ucm = contours2ucm_crisp_boundaries(mat2gray(E_oriented));
     S = ucm2colorsegs(E_ucm,I,thresh);
 

@@ -45,14 +45,16 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type)
     end
     %
     max_val = max(cellfun(@max_all,E_orienteds));
-    for i=1:length(img_list)
+    parfor i=1:length(img_list)
         E_orienteds{i} = E_orienteds{i}/max_val;
     end
     %% run UCM on boundary maps
-    for i=1:length(img_list)
+    parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
-        ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
-        save(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+        if (~exist(fullfile(RESULTS_DIR,[im_name '.mat']),'file'))
+            ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
+            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+        end
     end
     
     %% eval using BSR metrics
