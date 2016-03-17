@@ -27,7 +27,7 @@ if nargin<5, nthresh = 99; end
 
 
 iids = dir(fullfile(imgDir,'*.jpg'));
-for i = 1:numel(iids),
+parfor i = 1:numel(iids),
     evFile4 = fullfile(outDir, strcat(iids(i).name(1:end-4), '_ev4.txt'));
     if ~isempty(dir(evFile4)), continue; end
     

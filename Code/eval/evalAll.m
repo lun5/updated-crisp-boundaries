@@ -20,7 +20,7 @@
 function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type)
     
     %% read images
-    IMG_EXT = '.jpg';
+    IMG_EXT = '.tif';
     img_list = dirrec(IMG_DIR,IMG_EXT);
 
     %% compute boundaries for images
@@ -28,17 +28,20 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type)
         mkdir(RESULTS_DIR);
     end
     parfor i=1:length(img_list)
+	T = tic;
         [~,im_name,~] = fileparts(img_list{i});
-        if (~exist(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),'file'))
+        fprintf('Calculate E_oriented of image  %s ...',im_name);
+	if (~exist(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),'file'))
             I = imread(img_list{i});
             [~,E_oriented] = findBoundaries(I,type);
             E_oriented = imresize(E_oriented,size(I(:,:,1)));
             parsave(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),E_oriented);
         end
+	fprintf('Done in %.2f seconds \n',toc(T)); 
     end
     %% normalize output scale
-    E_orienteds = [];
-    for i=1:length(img_list)
+    E_orienteds = cell(1,length(img_list));
+    parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         tmp = load(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']));
         E_orienteds{i} = tmp.data;
@@ -50,14 +53,16 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type)
     end
     %% run UCM on boundary maps
     parfor i=1:length(img_list)
-        [~,im_name,~] = fileparts(img_list{i});
+        [~,im_name,~] = fileparts(img_list{i}); T= tic;
+	fprintf('Calculate ucm of image  %s ...',im_name);
         if (~exist(fullfile(RESULTS_DIR,[im_name '.mat']),'file'))
             ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
-            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),ucm2);
         end
+	fprintf('Done in %.2f seconds \n',toc(T));
     end
     
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
-    plot_eval(RESULTS_DIR);
+    %allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
+    %plot_eval(RESULTS_DIR);
 end

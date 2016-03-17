@@ -18,10 +18,18 @@ type = 'accurate_low_res';
 %type = 'MS_algorithm_from_paper';
 
 %% paths (modify these to point where you want)
-DATA_DIR = '../'; %'PATH/TO/BSDS';
-IMG_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/images/test/');
-GT_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/groundTruth/test/');
-RESULTS_DIR = sprintf('../Results/%s',type);
+githubdir = '/home/lun5/github/updated_crisp_boundaries/Code';
+addpath(genpath(githubdir));
+DATA_DIR ='/home/lun5/HEproject/';
+IMG_DIR = fullfile(DATA_DIR,'data','Tiles_512');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_fine_coarse');
+%RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results',['Isola_color_' type]);
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results',['Isola_' type '_new']);
+
+%DATA_DIR = '../'; %'PATH/TO/BSDS';
+%IMG_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/images/test/');
+%GT_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/groundTruth/test/');
+%RESULTS_DIR = sprintf('../Results/%s',type);
 
 %%
 evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type);

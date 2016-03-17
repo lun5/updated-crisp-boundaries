@@ -27,6 +27,7 @@ function [opts] = setEnvironment(type)
     
     %% features                                                 used in getFeatures.m:
     %opts.features.which_features = {'luminance'};
+    %opts.features.which_features = {'color'};             % which features to use?
     opts.features.which_features = {'color','var'};             % which features to use?
     opts.features.decorrelate = 1;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     
@@ -34,7 +35,7 @@ function [opts] = setEnvironment(type)
     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    opts.joint_exponent = 2;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
     opts.p_reg = 100;                                           % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
@@ -46,7 +47,7 @@ function [opts] = setEnvironment(type)
     opts.model_half_space_only = true;                          % when true we model only half the joint {A,B} space and assume symmetry
     
     % options for Eqn. 1 in paper
-    opts.sig = 0.25;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 3; %0.25;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     % speed up options
     opts.only_learn_on_first_scale = false;                     % setting this to true makes it so kde bandwidths and Affinity predictor are only 
@@ -73,7 +74,7 @@ function [opts] = setEnvironment(type)
                                                                 %   Sketch Tokens (Lim et al. 2013))
     
     %% other options
-    opts.display_progress = true;                           % set to false if you want to suppress all progress printouts
+    opts.display_progress = false;                           % set to false if you want to suppress all progress printouts
     
     
     
